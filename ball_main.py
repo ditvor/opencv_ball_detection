@@ -18,7 +18,6 @@ size = [screen_width, screen_height]
 ball_size = 25
 
 # ball starting point
-
 ball_start_x = 100
 ball_start_y = 320
 
@@ -107,7 +106,7 @@ def make_ball():
     ball.y = ball_start_y
 
     # components of velocity vector
-    ball.velocity_0_x = 5 + random.randrange(1, 10)
+    ball.velocity_0_x = 5 + random.randrange(1, 5)
     ball.velocity_0_y = 3 + random.randrange(1, 5)
 
     # angle of the velocity vector
@@ -212,10 +211,15 @@ def main():
                 position_ball_list.append((cv_left + x, y))
 
         # if we have enough data - let's predict the landing point
-        # move the paddle to catch the ball
         if len(position_ball_list) > 30:
             predicted_landing_position = predict_landing(paddle.x, position_ball_list)
-            paddle.y = predicted_landing_position - paddle.height / 2
+            # move the paddle to catch the ball
+            paddle_center = paddle.y + paddle.height / 2
+            if abs(predicted_landing_position - paddle_center) > 10:
+                if predicted_landing_position - paddle_center > 0:
+                    paddle.y += 20
+                else:
+                    paddle.y -= 20
 
         # limit to 30 FPS
         clock.tick(30)
